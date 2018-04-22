@@ -186,6 +186,14 @@
  * like the first entry, and 6-1 = 5, so the value of the entry is 5.
  * Finally the special entry FF signals the end of the ziplist.
  *
+ * 前4个字节表示数字15，即整个ziplist组成的字节数。
+ * 第二个4字节是找到最后一个ziplist元素的偏移量（从头开始计算)，即12，实际上最后一个元素是“5”，
+ * 位于ziplist中的偏移量12。下一个16位整数表示ziplist内的元素数量，其值为2，因为里面只有两个元素。
+ * 最后，“00 f3”是表示数字2的第一个元素。它由前一个元素长度组成，它是零，因为这是我们的第一个元素，
+ * 字节F3对应于编码| 1111xxxx | xxxx在0001和1101之间。我们需要删除“F”高位1111，并从“3”中减1，
+ * 因此输入值为“2”。下一个元素的prevlen为02，因为第一个元素由两个字节组成。条目本身F6的编码与
+ * 第一个元素完全相同，并且6-1 = 5，因此条目的值为5.最后，特殊元素FF指示ziplist的末尾。
+ *
  * Adding another element to the above string with the value "Hello World"
  * allows us to show how the ziplist encodes small strings. We'll just show
  * the hex dump of the entry itself. Imagine the bytes as following the
